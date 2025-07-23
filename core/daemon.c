@@ -3,7 +3,7 @@
 #include <signal.h>
 
 daemon_t DAEMON;
-const char* MM = "DMN";
+static const char* MM = "DMN";
 
 bool _daemon_close() {
 	DAEMON.is_running = false;
@@ -121,7 +121,7 @@ bool push_job(void* (*func)(void*), void* arg) {
 	job->func = func;
 	job->arg = arg;
 	if(!que_enque(DAEMON.job_que, job)) {
-		// Logging
+		logging(LL_ERR, MM, "Failed to push job");
 		return false;
 	}
 	return true;

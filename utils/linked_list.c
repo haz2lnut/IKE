@@ -1,5 +1,8 @@
 #include "linked_list.h"
 #include <stdlib.h>
+#include "log.h"
+
+static const char* MM = "LLT";
 
 typedef struct _llt_node_t _llt_node_t;
 struct _llt_node_t {
@@ -49,11 +52,11 @@ bool llt_free(linked_list_t* self) {
 bool llt_insert(linked_list_t* self, void* data, uint8_t position) {
 	// Errors
 	if(_llt_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list pointer is NULL?!");
 		return false;
 	}
 	else if(!llt_is_empty(self) && _llt_is_wrong(self, position)) {
-		// Logging
+		logging(LL_ERR, MM, "Wrong position(%d)", position);
 		return false;
 	}
 
@@ -95,15 +98,15 @@ bool llt_insert(linked_list_t* self, void* data, uint8_t position) {
 void* llt_delete(linked_list_t* self, uint8_t position) {
 	// Errors
 	if(_llt_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list pointer is NULL?!");
 		return NULL;
 	}
 	else if(llt_is_empty(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list is empty");
 		return NULL;
 	}
 	else if(_llt_is_wrong(self, position)) {
-		// Logging
+		logging(LL_ERR, MM, "Wrong position(%d)", position);
 		return NULL;
 	}
 
@@ -143,11 +146,11 @@ void* llt_delete(linked_list_t* self, uint8_t position) {
 void* llt_travel(linked_list_t* self) {
 	// Errors
 	if(_llt_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list pointer is NULL?!");
 		return NULL;
 	}
 	else if(llt_is_empty(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list is empty");
 		return NULL;
 	}
 
@@ -163,7 +166,7 @@ void* llt_travel(linked_list_t* self) {
 
 bool llt_travel_reset(linked_list_t* self) {
 	if(_llt_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "list pointer is NULL?!");
 		return false;
 	}
 

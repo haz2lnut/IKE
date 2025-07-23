@@ -1,6 +1,9 @@
 #include "netype.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "log.h"
+
+static const char* MM = "NET";
 
 packet_t* pkt_create(ip4_addr src, ip4_addr dst, buffer_t* data) {
 	packet_t* self = calloc(1, sizeof(packet_t));
@@ -27,7 +30,7 @@ ip4_addr ip4_stoa(const char* ipstr) {
 
 void ip4_atos(ip4_addr addr, char* buf, uint8_t size) {
 	if(size < IP4_STR_SIZE) {
-		// Logging
+		logging(LL_ERR, MM, "Wrong ip size(%d)", size);
 		return;
 	}
 

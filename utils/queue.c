@@ -1,5 +1,8 @@
 #include "queue.h"
 #include <stdlib.h>
+#include "log.h"
+
+static const char* MM = "QUE";
 
 bool _que_is_null(queue_t* self);
 
@@ -22,11 +25,11 @@ queue_t* que_create(bool is_mutex) {
 
 bool que_free(queue_t* self) {
 	if(_que_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "queue pointer is NULL?!");
 		return false;
 	}
 	else if(!llt_free(self->llt)) {
-		// Logging
+		logging(LL_ERR, MM, "Failed to free queue list");
 		return false;
 	}
 
@@ -36,7 +39,7 @@ bool que_free(queue_t* self) {
 
 bool que_enque(queue_t* self, void* data) {
 	if(_que_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "queue pointer is NULL?!");
 		return false;
 	}
 
@@ -56,7 +59,7 @@ bool que_enque(queue_t* self, void* data) {
 
 void* que_deque(queue_t* self) {
 	if(_que_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "queue pointer is NULL?!");
 		return NULL;
 	}
 

@@ -1,6 +1,9 @@
 #include "buffer.h"
 #include <stdlib.h>
 #include <string.h>
+#include "log.h"
+
+static const char* MM = "BUF";
 
 bool _buf_is_null(buffer_t* self);
 
@@ -26,11 +29,11 @@ bool buf_free(buffer_t* self) {
 bool buf_write_raw(buffer_t* self, void* src, uint16_t size, bool reverse) {
 	// Errors
 	if(_buf_is_null(self)) {
-		// Logging
+		logging(LL_ERR, MM, "buf pointer is NULL?!");
 		return false;
 	}
 	else if(size == 0) {
-		// Logging
+		logging(LL_ERR, MM, "Wrong write size");
 		return false;
 	}
 

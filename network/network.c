@@ -3,6 +3,8 @@
 #include "network.h"
 #include "daemon.h"
 
+static const char* MM = "NET";
+
 void* _net_receiving(void* arg);
 void* _net_sending(void* arg);
 
@@ -14,7 +16,7 @@ network_t* net_create() {
 	self->sock = socket(AF_INET, SOCK_DGRAM, 0);
 
 	if(self->sock < 0) {
-		// Logging
+		logging(LL_ERR, MM, "Failed to create socket");
 		return NULL;
 	}
 
@@ -28,7 +30,7 @@ network_t* net_create() {
 	addr.sin_port = htons(self->port);
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	if(bind(self->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-		// Logging
+		logging(LL_ERR, MM, "Failed to bind socket");
 		return NULL;
 	}
 
@@ -41,7 +43,7 @@ bool net_free(network_t* self) {
 		return true;
 	}
 	else {
-		// Logging
+		logging(LL_ERR, MM, "Failed to free network module");
 		return false;
 	}
 }
@@ -95,7 +97,7 @@ void* _net_receiving(void* arg) {
 			}
 		}
 		else if(len == -1) {
-			// Logging
+			logging(LL_ERR, MM, "Failed to receive messages");
 			break;
 		}
 	}
