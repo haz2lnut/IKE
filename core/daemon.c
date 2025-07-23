@@ -22,6 +22,9 @@ bool _daemon_close() {
 		}
 	}
 
+	for(int i = 0; i < WORKER_MAX; i++)
+		pthread_join(DAEMON.worker[i], NULL);
+
 	logging(LL_INFO, MM, "Close DAEMON");
 	return true;
 }
@@ -35,7 +38,8 @@ void _signal_handler(int sig) {
 }
 
 void* _worker_loop(void* arg) {
-	(void)arg;
+	int id = *(int*)arg;
+	free(arg);
 	while(DAEMON.is_running) {
 		job_t* job = que_deque(DAEMON.job_que);
 		if(job == NULL)
@@ -46,6 +50,7 @@ void* _worker_loop(void* arg) {
 		}
 	}
 
+	logging(LL_INFO, MM, "Close worker[%d]", id);
 	return NULL;
 }
 
@@ -93,13 +98,15 @@ bool running() {
 	signal(SIGINT, _signal_handler);
 
 	for(int i = 0; i < WORKER_MAX; i++) {
-		if(pthread_create(&DAEMON.worker[i], NULL, _worker_loop, NULL) != 0) {
+		int* arg = calloc(1, sizeof(int));
+		*arg = i;
+		if(pthread_create(&DAEMON.worker[i], NULL, _worker_loop, arg) != 0) {
 			logging(LL_ERR, MM, "Failed to free daemon, because it's not running");
 			_daemon_close();
 			return false;
 		}
 		else {
-			// Logging
+			logging(LL_INFO, MM, "Create worker[%d]", i);
 		}
 	}
 
