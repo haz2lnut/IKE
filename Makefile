@@ -1,22 +1,24 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
-LDFLAGS = 
+LDFLAGS = -lconfig
 RM = rm
 
-USER = $(shell whoami)
-ifeq ($(USER), root)
-	BEAR =
-else
-	BEAR = bear --
-endif
-
 BUILD_DIR = .build
-SRC_DIRS = core utils network log
+SRC_DIRS = core utils network log sa
 INCLUDE_DIRS = $(addprefix -I, $(SRC_DIRS))
 
 SRCS = $(wildcard $(addsuffix /*.c, $(SRC_DIRS)))
 OBJS = $(SRCS:.c=.o)
 OBJS := $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
+
+USER = $(shell whoami)
+ifeq ($(USER), root)
+	BEAR =
+else
+	INCLUDE_DIRS += -I/opt/homebrew/include
+	LDFLAGS += -L/opt/homebrew/lib
+	BEAR = bear --
+endif
 
 TARGET = $(BUILD_DIR)/ike
 
